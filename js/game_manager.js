@@ -9,6 +9,8 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
+  this.inputManager.on("loadState", this.loadState.bind(this));
+  this.inputManager.on("saveState", this.saveState.bind(this));
 
   this.setup();
 }
@@ -16,6 +18,20 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 // Restart the game
 GameManager.prototype.restart = function () {
   this.storageManager.clearGameState();
+  this.actuator.continueGame(); // Clear the game won/lost message
+  this.setup();
+};
+
+// Load state
+GameManager.prototype.loadState = function () {
+  this.storageManager.setGameState(this.storageManager.getSavedState());
+  this.actuator.continueGame(); // Clear the game won/lost message
+  this.setup();
+};
+
+// Save state
+GameManager.prototype.saveState = function () {
+  this.storageManager.setSavedState(this.storageManager.getGameState());
   this.actuator.continueGame(); // Clear the game won/lost message
   this.setup();
 };
